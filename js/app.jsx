@@ -18,15 +18,16 @@ var App = React.createClass({
     };
   }, //initial state
 
-  setAppState: function(newState) {
+  updateAppState: function(updatedState) {
+    var newState = React.addons.update(this.state, updatedState);
     this.setState(newState);
-  }, //setAppState
+  }, //updateAppState
 
   render: function() {
     return(
       <div id="main">
         <div className="col sm">
-          <Controls setAppState={this.setAppState} />
+          <Controls updateAppState={this.updateAppState} />
         </div>
         <div className="col lg">
           <Container container_css={this.state.container_css} />
@@ -45,12 +46,12 @@ var Controls = React.createClass({
     return(
       <div id="controls">
         <div className="header">
-          <h1>FlexAndReact</h1>
-          <h6>FlexBox Builder Using React.js</h6>
-          <p><a target="_blank" href="https://github.com/jlblatt/FlexAndReact">View On Github</a></p>
+          <h1 className="title">FlexAndReact</h1>
+          <p className="byline">FlexBox Builder Using React.js [<a target="_blank" href="https://github.com/jlblatt/FlexAndReact">View On Github</a>]</p>
         </div>
         <div className="panel container-settings">
-          <ContainerControls setAppState={this.props.setAppState} />
+          <h4 className="title">Container Settings</h4>
+          <ContainerControls updateAppState={this.props.updateAppState} />
         </div>
       </div>
     )
@@ -64,22 +65,66 @@ var ContainerControls = React.createClass({
 
   updateContainer: function(e) {
     var obj = {};
-    obj[$(e.target).data('css')] = $(e.target).val();
-    this.props.setAppState({ container_css : obj });
+    obj[$(e.target).data('css')] = {$set: $(e.target).val()};
+    this.props.updateAppState({ container_css : obj });
   },
 
   render: function() {
     return(
-      <div className="control select">
-        {this.context.text}
-        <label>flex-direction:
-          <select data-css="flexDirection" onChange={this.updateContainer}>
-            <option value="row">row</option>
-            <option value="row-reverse">row-reverse</option>
-            <option value="column">column</option>
-            <option value="column-reverse">column-reverse</option>
-          </select>
-        </label>
+      <div className="control-set">
+        <div className="control select">
+          <label>flex-direction:
+            <select data-css="flexDirection" onChange={this.updateContainer}>
+              <option value="row">row</option>
+              <option value="row-reverse">row-reverse</option>
+              <option value="column">column</option>
+              <option value="column-reverse">column-reverse</option>
+            </select>
+          </label>
+        </div>
+        <div className="control select">
+          <label>flex-wrap:
+            <select data-css="flexWrap" onChange={this.updateContainer}>
+              <option value="nowrap">nowrap</option>
+              <option value="wrap">wrap</option>
+              <option value="wrap-reverse">wrap-reverse</option>
+            </select>
+          </label>
+        </div>
+        <div className="control select">
+          <label>justify-content:
+            <select data-css="justifyContent" onChange={this.updateContainer}>
+              <option value="flex-start">flex-start</option>
+              <option value="flex-end">flex-end</option>
+              <option value="center">center</option>
+              <option value="space-between">space-between</option>
+              <option value="space-around">space-around</option>
+            </select>
+          </label>
+        </div>
+        <div className="control select">
+          <label>align-items:
+            <select data-css="alignItems" onChange={this.updateContainer}>
+              <option value="flex-start">flex-start</option>
+              <option value="flex-end">flex-end</option>
+              <option value="center">center</option>
+              <option value="baseline">baseline</option>
+              <option value="stretch">stretch</option>
+            </select>
+          </label>
+        </div>
+        <div className="control select">
+          <label>align-content:
+            <select data-css="alignContent" onChange={this.updateContainer}>
+              <option value="flex-start">flex-start</option>
+              <option value="flex-end">flex-end</option>
+              <option value="center">center</option>
+              <option value="space-between">space-between</option>
+              <option value="space-around">space-around</option>
+              <option value="stretch" selected>stretch</option>
+            </select>
+          </label>
+        </div>
       </div>
     )
   }

@@ -10,35 +10,106 @@ $xlarge: 1920px;
 * { box-sizing: border-box }
 
 html, body {
-  min-height: 100%;
-  font-family: sans-serif;
-  font-size: 1rem;
-  line-height: 1.4;
+  height: 100%;
 }
 
 body {
   overflow-x: hidden;
+  font-family: sans-serif;
+  font-size: 80%;
+  line-height: 1.4;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.6em;
+}
+
+h3 {
+  font-size: 1.4em;
+}
+
+h4 {
+  font-size: 1.3em;
+}
+
+h5 {
+  font-size: 1.2em;
+}
+
+h6 {
+  font-size: 1.1em;
+}
+
+p {}
+
+label {
+  font-size: .75em;
+}
+
+select {
+  display: block;
+  position: relative;
+  left: -.15em;
+  font-size: 1.25em;
+}
+
+#app {
+  height: 100%;
 }
 
 #main {
-   @media (min-width: $medium) {
+  height: 100%;
+  @media (min-width: $medium) {
     display: flex;
     flex-direction: row-reverse;
+    align-items: stretch;
   }
 }
 
 .col {
   @media (min-width: $medium) {
-    &.lg {flex: 0 0 67%;}
-    &.sm {flex: 0 0 33%;}
+    &.lg {flex: 0 0 60%;}
+    &.sm {flex: 0 0 40%;}
   }
 }
 
 #canvas {
-  padding: 1rem;
+  height: 100%;
+  padding: 1em 1.6em;
 }
 
 #controls {
-  padding: 1rem;
+  height: 100%;
+  padding: 1em 1.6em;
   background: #eee;
+}
+
+.header {
+  margin-bottom: 1.6em;
+
+  .byline {
+    font-size: .9em;
+    font-style: italic;
+  }
+
+}
+
+.panel {
+  border-left: 1px solid #bbb;
+  padding-left: 1.2em;
+  margin-bottom: 1.8em;
+
+  .title {
+    margin-bottom: .4em;
+  }
+
+  .control {
+    display: inline-block;
+    margin: 0 1.2em .7em 0;
+    padding-left: .1em;
+  }
 }
