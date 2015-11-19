@@ -14,20 +14,22 @@ var App = React.createClass({
         justifyContent: "flex-start",
         alignItems: "flex-start",
         alignContent: "stretch"
-      }
+      },
+      elements: [],
+      selected: null
     };
   }, //initial state
 
-  updateAppState: function(updatedState) {
-    var newState = React.addons.update(this.state, updatedState);
+  changeContainerCSS: function(prop, val) {
+    var newState = React.addons.update(this.state, { container_css : { prop : { $set : val } } });
     this.setState(newState);
-  }, //updateAppState
+  }, //changeContainerCSS
 
   render: function() {
     return(
       <div id="main">
         <div className="col sm">
-          <Controls updateAppState={this.updateAppState} />
+          <Controls changeContainerCSS={this.changeContainerCSS} selected={this.state.selected}/>
         </div>
         <div className="col lg">
           <Container container_css={this.state.container_css} />
@@ -51,7 +53,14 @@ var Controls = React.createClass({
         </div>
         <div className="panel container-settings">
           <h4 className="title">Container Settings</h4>
-          <ContainerControls updateAppState={this.props.updateAppState} />
+          <ContainerControls changeContainerCSS={this.props.changeContainerCSS} />
+        </div>
+        <div className="panel container-settings">
+          <h4 className="title">Box Settings</h4>
+          <ElementControls selected={this.props.selected}/>
+        </div>
+        <div className="add">
+          <a title="Add Element" onclick={this.addElement}>+</a>
         </div>
       </div>
     )
@@ -64,9 +73,7 @@ var Controls = React.createClass({
 var ContainerControls = React.createClass({
 
   updateContainer: function(e) {
-    var obj = {};
-    obj[$(e.target).data('css')] = {$set: $(e.target).val()};
-    this.props.updateAppState({ container_css : obj });
+    this.props.changeContainerCSS($(e.target).data('css'), $(e.target).val());
   },
 
   render: function() {
@@ -130,6 +137,24 @@ var ContainerControls = React.createClass({
   }
 
 }); //class ContainerControls
+
+
+
+var ElementControls = React.createClass({
+
+  render: function() {
+    if(this.props.selected === null)
+      return(
+        <div className="no-selection">No element selected!</div>
+      )
+
+    else
+      return(
+        foo
+      )
+  }
+
+}); //class ElementControls
 
 
 

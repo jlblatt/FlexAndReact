@@ -1,5 +1,4 @@
 @import "reset";
-@import "bourbon/bourbon";
 
 $xsmall: 360px;
 $small: 640px;
@@ -85,7 +84,7 @@ select {
 #controls {
   height: 100%;
   padding: 1em 1.6em;
-  background: #eee;
+  background: #f4f4f4;
 }
 
 .header {
@@ -111,5 +110,42 @@ select {
     display: inline-block;
     margin: 0 1.2em .7em 0;
     padding-left: .1em;
+  }
+}
+
+.no-selection {
+  background: #f0f0f0;
+  text-align: center;
+  padding: 3em 2em;
+  font-style: italic;
+  color: #666;
+  font-size: 1.4em;
+}
+
+.add {
+  text-align: center;
+  padding: 1em;
+
+  a {
+    display: inline-block;
+    border-radius: 4rem;
+    height: 4rem;
+    width: 4rem;
+    text-align: center;
+    background: transparent;
+    border: 3px solid #aaa;
+    color: #aaa;
+    font-size: 3.5em;
+    line-height: 1.2em;
+    font-family: sans-serif;
+    transition: transform .8s, color .4s, border-color.4s;
+    transform: scale(1,1);
+
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.2,1.2);
+      border-color: SteelBlue;
+      color: SteelBlue;
+    }
   }
 }

@@ -14,20 +14,22 @@ var App = React.createClass({displayName: "App",
         justifyContent: "flex-start",
         alignItems: "flex-start",
         alignContent: "stretch"
-      }
+      },
+      elements: [],
+      selected: null
     };
   }, //initial state
 
-  updateAppState: function(updatedState) {
-    var newState = React.addons.update(this.state, updatedState);
+  changeContainerCSS: function(prop, val) {
+    var newState = React.addons.update(this.state, { container_css : { prop : { $set : val } } });
     this.setState(newState);
-  }, //updateAppState
+  }, //changeContainerCSS
 
   render: function() {
     return(
       React.createElement("div", {id: "main"}, 
         React.createElement("div", {className: "col sm"}, 
-          React.createElement(Controls, {updateAppState: this.updateAppState})
+          React.createElement(Controls, {changeContainerCSS: this.changeContainerCSS, selected: this.state.selected})
         ), 
         React.createElement("div", {className: "col lg"}, 
           React.createElement(Container, {container_css: this.state.container_css})
@@ -51,7 +53,14 @@ var Controls = React.createClass({displayName: "Controls",
         ), 
         React.createElement("div", {className: "panel container-settings"}, 
           React.createElement("h4", {className: "title"}, "Container Settings"), 
-          React.createElement(ContainerControls, {updateAppState: this.props.updateAppState})
+          React.createElement(ContainerControls, {changeContainerCSS: this.props.changeContainerCSS})
+        ), 
+        React.createElement("div", {className: "panel container-settings"}, 
+          React.createElement("h4", {className: "title"}, "Box Settings"), 
+          React.createElement(ElementControls, {selected: this.props.selected})
+        ), 
+        React.createElement("div", {className: "add"}, 
+          React.createElement("a", {title: "Add Element", onclick: this.addElement}, "+")
         )
       )
     )
@@ -64,9 +73,7 @@ var Controls = React.createClass({displayName: "Controls",
 var ContainerControls = React.createClass({displayName: "ContainerControls",
 
   updateContainer: function(e) {
-    var obj = {};
-    obj[$(e.target).data('css')] = {$set: $(e.target).val()};
-    this.props.updateAppState({ container_css : obj });
+    this.props.changeContainerCSS($(e.target).data('css'), $(e.target).val());
   },
 
   render: function() {
@@ -130,6 +137,24 @@ var ContainerControls = React.createClass({displayName: "ContainerControls",
   }
 
 }); //class ContainerControls
+
+
+
+var ElementControls = React.createClass({displayName: "ElementControls",
+
+  render: function() {
+    if(this.props.selected === null)
+      return(
+        React.createElement("div", {className: "no-selection"}, "No element selected!")
+      )
+
+    else
+      return(
+        foo
+      )
+  }
+
+}); //class ElementControls
 
 
 
