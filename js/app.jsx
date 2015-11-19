@@ -13,7 +13,7 @@ var App = React.createClass({
         flexWrap: "nowrap",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        alignContent: "stretch"
+        alignContent: "flex-start"
       },
       elements: [],
       selected: null,
@@ -23,7 +23,8 @@ var App = React.createClass({
   }, //initial state
 
   changeContainerCSS: function(prop, val) {
-    var newState = React.addons.update(this.state, { containerCSS : { prop : { $set : val } } });
+    var stateObj = { containerCSS : {} }; stateObj.containerCSS[prop] = { $set : val };
+    var newState = React.addons.update(this.state, stateObj);
     this.setState(newState);
   }, //changeContainerCSS
 
