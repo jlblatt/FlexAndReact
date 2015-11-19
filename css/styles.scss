@@ -62,6 +62,7 @@ select {
 
 #main {
   height: 100%;
+
   @media (min-width: $medium) {
     display: flex;
     flex-direction: row-reverse;
@@ -76,9 +77,34 @@ select {
   }
 }
 
-#canvas {
-  height: 100%;
-  padding: 1em 1.6em;
+#container {
+  padding: 1em;
+
+  .element {
+    padding: 1em;
+
+    .wrap {
+      padding: 1em 1.2em;
+      background: #f4f4f4;
+
+      .props {
+        margin-bottom: 1.2em;
+        padding-bottom: .6em;
+        border-bottom: 1px solid #bbb;
+        text-transform: uppercase;
+        font-size: .7em;
+        font-weight: bold;
+
+        .order {
+          float: right;
+        }
+      }
+
+      .content {
+
+      }
+    }
+  }
 }
 
 #controls {
@@ -140,6 +166,7 @@ select {
     font-family: sans-serif;
     transition: transform .8s, color .4s, border-color.4s;
     transform: scale(1,1);
+    user-select: none;
 
     &:hover {
       cursor: pointer;

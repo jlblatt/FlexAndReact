@@ -8,7 +8,7 @@ var App = React.createClass({displayName: "App",
 
   getInitialState: function() {
     return {
-      container_css : {
+      containerCSS : {
         flexDirection: "row",
         flexWrap: "nowrap",
         justifyContent: "flex-start",
@@ -16,23 +16,48 @@ var App = React.createClass({displayName: "App",
         alignContent: "stretch"
       },
       elements: [],
-      selected: null
+      selected: null,
+      counter: 0,
+      lastElementProps: null
     };
   }, //initial state
 
   changeContainerCSS: function(prop, val) {
-    var newState = React.addons.update(this.state, { container_css : { prop : { $set : val } } });
+    var newState = React.addons.update(this.state, { containerCSS : { prop : { $set : val } } });
     this.setState(newState);
   }, //changeContainerCSS
+
+  addElement: function() {
+
+    var newElement;
+
+    if(!this.state.lastElementProps)
+    {
+        newElement = {
+        order: this.state.counter++,
+        flexGrow: 0,
+        flexShrink: 1,
+        flexBasis: "auto",
+        alignSelf: "auto",
+        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      };
+    }
+
+    else newElement = this.state.lastElementProps;
+
+    var newState = React.addons.update(this.state, { elements : { $push : [newElement] } });
+    this.setState(newState);
+
+  }, //addElement
 
   render: function() {
     return(
       React.createElement("div", {id: "main"}, 
         React.createElement("div", {className: "col sm"}, 
-          React.createElement(Controls, {changeContainerCSS: this.changeContainerCSS, selected: this.state.selected})
+          React.createElement(Controls, {changeContainerCSS: this.changeContainerCSS, addElement: this.addElement, selected: this.state.selected})
         ), 
         React.createElement("div", {className: "col lg"}, 
-          React.createElement(Container, {container_css: this.state.container_css})
+          React.createElement(Container, {containerCSS: this.state.containerCSS, elements: this.state.elements})
         )
       )
     );
@@ -60,7 +85,7 @@ var Controls = React.createClass({displayName: "Controls",
           React.createElement(ElementControls, {selected: this.props.selected})
         ), 
         React.createElement("div", {className: "add"}, 
-          React.createElement("a", {title: "Add Element", onclick: this.addElement}, "+")
+          React.createElement("a", {title: "Add Element", onClick: this.props.addElement}, "+")
         )
       )
     )
@@ -128,7 +153,7 @@ var ContainerControls = React.createClass({displayName: "ContainerControls",
               React.createElement("option", {value: "center"}, "center"), 
               React.createElement("option", {value: "space-between"}, "space-between"), 
               React.createElement("option", {value: "space-around"}, "space-around"), 
-              React.createElement("option", {value: "stretch", selected: true}, "stretch")
+              React.createElement("option", {value: "stretch"}, "stretch")
             )
           )
         )
@@ -163,19 +188,45 @@ var Container = React.createClass({displayName: "Container",
   render: function() {
     var containerStyle = {
       display: "flex",
-      flexDirection: this.props.container_css.flexDirection,
-      flexWrap: this.props.container_css.flexWrap,
-      justifyContent: this.props.container_css.justifyContent,
-      alignItems: this.props.container_css.alignItems,
-      alignContent: this.props.container_css.alignContent
+      flexDirection: this.props.containerCSS.flexDirection,
+      flexWrap: this.props.containerCSS.flexWrap,
+      justifyContent: this.props.containerCSS.justifyContent,
+      alignItems: this.props.containerCSS.alignItems,
+      alignContent: this.props.containerCSS.alignContent
     };
 
     return(
-      React.createElement("div", {id: "container", style: containerStyle}
+
+      React.createElement("div", {id: "container", style: containerStyle}, 
+
+        this.props.elements.map(function(element, i){
+
+          var elementStyle = {
+            order: element.order,
+            flexGrow: element.flexGrow,
+            flexShrink: element.flexShrink,
+            flexBasis: element.flexBasis,
+            alignSelf: element.alignSelf
+          }
+
+          return (
+            React.createElement("div", {className: "element", style: elementStyle, key: i}, 
+              React.createElement("div", {className: "wrap"}, 
+                React.createElement("div", {className: "props"}, 
+                  React.createElement("span", {className: "order"}, element.order), 
+                  React.createElement("span", {className: "flex"}, element.flexGrow, " ", element.flexShrink, " ", element.flexBasis, " | ", element.alignSelf)
+                ), 
+                React.createElement("div", {className: "content"}, element.content)
+              )
+            )
+          )
+
+        })
 
       )
+
     )
-  }
+  } //render
 
 }); //class Container
 

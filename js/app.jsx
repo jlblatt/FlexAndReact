@@ -8,7 +8,7 @@ var App = React.createClass({
 
   getInitialState: function() {
     return {
-      container_css : {
+      containerCSS : {
         flexDirection: "row",
         flexWrap: "nowrap",
         justifyContent: "flex-start",
@@ -16,23 +16,48 @@ var App = React.createClass({
         alignContent: "stretch"
       },
       elements: [],
-      selected: null
+      selected: null,
+      counter: 0,
+      lastElementProps: null
     };
   }, //initial state
 
   changeContainerCSS: function(prop, val) {
-    var newState = React.addons.update(this.state, { container_css : { prop : { $set : val } } });
+    var newState = React.addons.update(this.state, { containerCSS : { prop : { $set : val } } });
     this.setState(newState);
   }, //changeContainerCSS
+
+  addElement: function() {
+
+    var newElement;
+
+    if(!this.state.lastElementProps)
+    {
+        newElement = {
+        order: this.state.counter++,
+        flexGrow: 0,
+        flexShrink: 1,
+        flexBasis: "auto",
+        alignSelf: "auto",
+        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      };
+    }
+
+    else newElement = this.state.lastElementProps;
+
+    var newState = React.addons.update(this.state, { elements : { $push : [newElement] } });
+    this.setState(newState);
+
+  }, //addElement
 
   render: function() {
     return(
       <div id="main">
         <div className="col sm">
-          <Controls changeContainerCSS={this.changeContainerCSS} selected={this.state.selected}/>
+          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} selected={this.state.selected}/>
         </div>
         <div className="col lg">
-          <Container container_css={this.state.container_css} />
+          <Container containerCSS={this.state.containerCSS} elements={this.state.elements} />
         </div>
       </div>
     );
@@ -60,7 +85,7 @@ var Controls = React.createClass({
           <ElementControls selected={this.props.selected}/>
         </div>
         <div className="add">
-          <a title="Add Element" onclick={this.addElement}>+</a>
+          <a title="Add Element" onClick={this.props.addElement}>+</a>
         </div>
       </div>
     )
@@ -128,7 +153,7 @@ var ContainerControls = React.createClass({
               <option value="center">center</option>
               <option value="space-between">space-between</option>
               <option value="space-around">space-around</option>
-              <option value="stretch" selected>stretch</option>
+              <option value="stretch">stretch</option>
             </select>
           </label>
         </div>
@@ -163,19 +188,45 @@ var Container = React.createClass({
   render: function() {
     var containerStyle = {
       display: "flex",
-      flexDirection: this.props.container_css.flexDirection,
-      flexWrap: this.props.container_css.flexWrap,
-      justifyContent: this.props.container_css.justifyContent,
-      alignItems: this.props.container_css.alignItems,
-      alignContent: this.props.container_css.alignContent
+      flexDirection: this.props.containerCSS.flexDirection,
+      flexWrap: this.props.containerCSS.flexWrap,
+      justifyContent: this.props.containerCSS.justifyContent,
+      alignItems: this.props.containerCSS.alignItems,
+      alignContent: this.props.containerCSS.alignContent
     };
 
     return(
+
       <div id="container" style={containerStyle}>
 
+        {this.props.elements.map(function(element, i){
+
+          var elementStyle = {
+            order: element.order,
+            flexGrow: element.flexGrow,
+            flexShrink: element.flexShrink,
+            flexBasis: element.flexBasis,
+            alignSelf: element.alignSelf
+          }
+
+          return (
+            <div className="element" style={elementStyle} key={i}>
+              <div className="wrap">
+                <div className="props">
+                  <span className="order">{element.order}</span>
+                  <span className="flex">{element.flexGrow} {element.flexShrink} {element.flexBasis} | {element.alignSelf}</span>
+                </div>
+                <div className="content">{element.content}</div>
+              </div>
+            </div>
+          )
+
+        })}
+
       </div>
+
     )
-  }
+  } //render
 
 }); //class Container
 
