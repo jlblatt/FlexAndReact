@@ -181,13 +181,31 @@ var ElementControls = React.createClass({displayName: "ElementControls",
     else
       return(
         React.createElement("div", {className: "control-set"}, 
+          React.createElement("div", {className: "control text"}, 
+            React.createElement("label", null, "flex-grow:", 
+              React.createElement("input", {type: "number", min: "0", "data-css": "flexGrow"})
+            )
+          ), 
+          React.createElement("div", {className: "control text"}, 
+            React.createElement("label", null, "flex-shrink:", 
+              React.createElement("input", {type: "number", min: "0", "data-css": "flexShrink"})
+            )
+          ), 
+          React.createElement("div", {className: "control text"}, 
+            React.createElement("label", null, "flex-basis:", 
+              React.createElement("input", {type: "text", "data-css": "flexBasis"})
+            )
+          ), 
           React.createElement("div", {className: "control select"}, 
-            React.createElement("label", null, "flex-direction:", 
-              React.createElement("select", {"data-css": "flexDirection"}, 
-                React.createElement("option", {value: "row"}, "row"), 
-                React.createElement("option", {value: "row-reverse"}, "row-reverse"), 
-                React.createElement("option", {value: "column"}, "column"), 
-                React.createElement("option", {value: "column-reverse"}, "column-reverse")
+            React.createElement("label", null, "align-self:", 
+              React.createElement("select", {"data-css": "alignSelf"}, 
+              "align-self: auto | flex-start | flex-end | center | baseline | stretch", 
+                React.createElement("option", {value: "auto"}, "auto"), 
+                React.createElement("option", {value: "flex-start"}, "flex-start"), 
+                React.createElement("option", {value: "flex-end"}, "flex-end"), 
+                React.createElement("option", {value: "center"}, "center"), 
+                React.createElement("option", {value: "baseline"}, "baseline"), 
+                React.createElement("option", {value: "stretch"}, "stretch")
               )
             )
           )

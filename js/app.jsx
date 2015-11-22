@@ -181,13 +181,31 @@ var ElementControls = React.createClass({
     else
       return(
         <div className="control-set">
+          <div className="control text">
+            <label>flex-grow:
+              <input type="number" min="0" data-css="flexGrow" />
+            </label>
+          </div>
+          <div className="control text">
+            <label>flex-shrink:
+              <input type="number" min="0" data-css="flexShrink" />
+            </label>
+          </div>
+          <div className="control text">
+            <label>flex-basis:
+              <input type="text" data-css="flexBasis" />
+            </label>
+          </div>
           <div className="control select">
-            <label>flex-direction:
-              <select data-css="flexDirection">
-                <option value="row">row</option>
-                <option value="row-reverse">row-reverse</option>
-                <option value="column">column</option>
-                <option value="column-reverse">column-reverse</option>
+            <label>align-self:
+              <select data-css="alignSelf">
+              align-self: auto | flex-start | flex-end | center | baseline | stretch
+                <option value="auto">auto</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="baseline">baseline</option>
+                <option value="stretch">stretch</option>
               </select>
             </label>
           </div>
