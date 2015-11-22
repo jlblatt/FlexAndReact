@@ -17,7 +17,7 @@ var App = React.createClass({
       },
       elements: [],
       selected: null,
-      counter: 0,
+      counter: 1,
       lastElementProps: null
     };
   }, //initial state
@@ -32,9 +32,8 @@ var App = React.createClass({
 
     var newElement;
 
-    if(!this.state.lastElementProps)
-    {
-        newElement = {
+    if(!this.state.lastElementProps) {
+      newElement = {
         order: this.state.counter++,
         flexGrow: 0,
         flexShrink: 1,
@@ -47,18 +46,23 @@ var App = React.createClass({
     else newElement = this.state.lastElementProps;
 
     var newState = React.addons.update(this.state, { elements : { $push : [newElement] } });
+    newState.selected = newElement.order;
     this.setState(newState);
 
   }, //addElement
+
+  selectElement: function(which, e) {
+    this.setState({selected: which});
+  }, //selectElement
 
   render: function() {
     return(
       <div id="main">
         <div className="col sm">
-          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} selected={this.state.selected}/>
+          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} selected={this.state.selected} />
         </div>
         <div className="col lg">
-          <Container containerCSS={this.state.containerCSS} elements={this.state.elements} />
+          <Container containerCSS={this.state.containerCSS} selectElement={this.selectElement} elements={this.state.elements} selected={this.state.selected} />
         </div>
       </div>
     );
@@ -176,7 +180,18 @@ var ElementControls = React.createClass({
 
     else
       return(
-        foo
+        <div className="control-set">
+          <div className="control select">
+            <label>flex-direction:
+              <select data-css="flexDirection">
+                <option value="row">row</option>
+                <option value="row-reverse">row-reverse</option>
+                <option value="column">column</option>
+                <option value="column-reverse">column-reverse</option>
+              </select>
+            </label>
+          </div>
+        </div>
       )
   }
 
@@ -187,6 +202,7 @@ var ElementControls = React.createClass({
 var Container = React.createClass({
 
   render: function() {
+
     var containerStyle = {
       display: "flex",
       flexDirection: this.props.containerCSS.flexDirection,
@@ -195,6 +211,8 @@ var Container = React.createClass({
       alignItems: this.props.containerCSS.alignItems,
       alignContent: this.props.containerCSS.alignContent
     };
+
+    var props = this.props;
 
     return(
 
@@ -210,9 +228,11 @@ var Container = React.createClass({
             alignSelf: element.alignSelf
           }
 
+          var className = props.selected == element.order ? 'element selected' : 'element';
+
           return (
-            <div className="element" style={elementStyle} key={i}>
-              <div className="wrap">
+            <div className={className} style={elementStyle} key={i}>
+              <div className="wrap" onClick={props.selectElement.bind(null, element.order)}>
                 <div className="props">
                   <span className="order">{element.order}</span>
                   <span className="flex">{element.flexGrow} {element.flexShrink} {element.flexBasis} | {element.alignSelf}</span>

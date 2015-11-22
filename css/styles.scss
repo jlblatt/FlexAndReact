@@ -87,6 +87,14 @@ select {
     .wrap {
       padding: 1em 1.2em;
       background: #f4f4f4;
+      border: 1px solid #f4f4f4;
+      transition: opacity .3s, border-color .3s;
+
+      &:hover {
+        cursor: pointer;
+        opacity: .8;
+        border: 1px solid #bbb;
+      }
 
       .props {
         margin-bottom: 1.2em;
@@ -103,6 +111,13 @@ select {
 
       .content {
 
+      }
+    }
+
+    &.selected {
+      .wrap {
+        border: 1px solid #bbb;
+        box-shadow: 0 0 .7rem -.1rem rgba(0,0,255,.4);
       }
     }
   }

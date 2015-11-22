@@ -17,7 +17,7 @@ var App = React.createClass({displayName: "App",
       },
       elements: [],
       selected: null,
-      counter: 0,
+      counter: 1,
       lastElementProps: null
     };
   }, //initial state
@@ -32,9 +32,8 @@ var App = React.createClass({displayName: "App",
 
     var newElement;
 
-    if(!this.state.lastElementProps)
-    {
-        newElement = {
+    if(!this.state.lastElementProps) {
+      newElement = {
         order: this.state.counter++,
         flexGrow: 0,
         flexShrink: 1,
@@ -47,9 +46,14 @@ var App = React.createClass({displayName: "App",
     else newElement = this.state.lastElementProps;
 
     var newState = React.addons.update(this.state, { elements : { $push : [newElement] } });
+    newState.selected = newElement.order;
     this.setState(newState);
 
   }, //addElement
+
+  selectElement: function(which, e) {
+    this.setState({selected: which});
+  }, //selectElement
 
   render: function() {
     return(
@@ -58,7 +62,7 @@ var App = React.createClass({displayName: "App",
           React.createElement(Controls, {changeContainerCSS: this.changeContainerCSS, addElement: this.addElement, selected: this.state.selected})
         ), 
         React.createElement("div", {className: "col lg"}, 
-          React.createElement(Container, {containerCSS: this.state.containerCSS, elements: this.state.elements})
+          React.createElement(Container, {containerCSS: this.state.containerCSS, selectElement: this.selectElement, elements: this.state.elements, selected: this.state.selected})
         )
       )
     );
@@ -176,7 +180,18 @@ var ElementControls = React.createClass({displayName: "ElementControls",
 
     else
       return(
-        foo
+        React.createElement("div", {className: "control-set"}, 
+          React.createElement("div", {className: "control select"}, 
+            React.createElement("label", null, "flex-direction:", 
+              React.createElement("select", {"data-css": "flexDirection"}, 
+                React.createElement("option", {value: "row"}, "row"), 
+                React.createElement("option", {value: "row-reverse"}, "row-reverse"), 
+                React.createElement("option", {value: "column"}, "column"), 
+                React.createElement("option", {value: "column-reverse"}, "column-reverse")
+              )
+            )
+          )
+        )
       )
   }
 
@@ -187,6 +202,7 @@ var ElementControls = React.createClass({displayName: "ElementControls",
 var Container = React.createClass({displayName: "Container",
 
   render: function() {
+
     var containerStyle = {
       display: "flex",
       flexDirection: this.props.containerCSS.flexDirection,
@@ -195,6 +211,8 @@ var Container = React.createClass({displayName: "Container",
       alignItems: this.props.containerCSS.alignItems,
       alignContent: this.props.containerCSS.alignContent
     };
+
+    var props = this.props;
 
     return(
 
@@ -210,9 +228,11 @@ var Container = React.createClass({displayName: "Container",
             alignSelf: element.alignSelf
           }
 
+          var className = props.selected == element.order ? 'element selected' : 'element';
+
           return (
-            React.createElement("div", {className: "element", style: elementStyle, key: i}, 
-              React.createElement("div", {className: "wrap"}, 
+            React.createElement("div", {className: className, style: elementStyle, key: i}, 
+              React.createElement("div", {className: "wrap", onClick: props.selectElement.bind(null, element.order)}, 
                 React.createElement("div", {className: "props"}, 
                   React.createElement("span", {className: "order"}, element.order), 
                   React.createElement("span", {className: "flex"}, element.flexGrow, " ", element.flexShrink, " ", element.flexBasis, " | ", element.alignSelf)
