@@ -56,11 +56,20 @@ var App = React.createClass({displayName: "App",
     e.stopPropagation();
   }, //selectElement
 
+  updateElement: function(prop, val, which) {
+    var stateObj = { elements : [] };
+    stateObj.elements[which] = {};
+    stateObj.elements[which][prop] = { $set : val };
+
+    //var newState = React.addons.update(this.state, stateObj);
+    //this.setState(newState);
+  }, //updateElement
+
   render: function() {
     return(
       React.createElement("div", {id: "main"}, 
         React.createElement("div", {className: "col sm"}, 
-          React.createElement(Controls, {changeContainerCSS: this.changeContainerCSS, addElement: this.addElement, element: this.state.elements[this.state.selected]})
+          React.createElement(Controls, {changeContainerCSS: this.changeContainerCSS, addElement: this.addElement, updateElement: this.updateElement, element: this.state.elements[this.state.selected]})
         ), 
         React.createElement("div", {className: "col lg"}, 
           React.createElement(Container, {containerCSS: this.state.containerCSS, selectElement: this.selectElement, elements: this.state.elements, selected: this.state.selected})
@@ -85,7 +94,7 @@ var Controls = React.createClass({displayName: "Controls",
 
         React.createElement(ContainerControls, {changeContainerCSS: this.props.changeContainerCSS}), 
 
-        React.createElement(ElementControls, {element: this.props.element}), 
+        React.createElement(ElementControls, {element: this.props.element, updateElement: this.props.updateElement}), 
 
         React.createElement("div", {className: "add"}, 
           React.createElement("a", {title: "Add Element", onClick: this.props.addElement}, "+")
@@ -173,6 +182,10 @@ var ContainerControls = React.createClass({displayName: "ContainerControls",
 
 var ElementControls = React.createClass({displayName: "ElementControls",
 
+  changeElement: function(e) {
+    this.props.updateElement(this.props.element.order, $(e.target).data('css'), $(e.target).val());
+  },
+
   render: function() {
     if(!this.props.element)
       return(
@@ -189,22 +202,22 @@ var ElementControls = React.createClass({displayName: "ElementControls",
           React.createElement("div", {className: "control-set"}, 
             React.createElement("div", {className: "control text"}, 
               React.createElement("label", null, "flex-grow:", 
-                React.createElement("input", {type: "number", min: "0", "data-css": "flexGrow"})
+                React.createElement("input", {type: "number", min: "0", "data-prop": "flexGrow", defaultValue: this.props.element.flexGrow, onChange: this.changeElement})
               )
             ), 
             React.createElement("div", {className: "control text"}, 
               React.createElement("label", null, "flex-shrink:", 
-                React.createElement("input", {type: "number", min: "0", "data-css": "flexShrink"})
+                React.createElement("input", {type: "number", min: "0", "data-prop": "flexShrink", defaultValue: this.props.element.flexShrink, onChange: this.changeElement})
               )
             ), 
             React.createElement("div", {className: "control text"}, 
               React.createElement("label", null, "flex-basis:", 
-                React.createElement("input", {type: "text", "data-css": "flexBasis"})
+                React.createElement("input", {type: "text", "data-prop": "flexBasis", defaultValue: this.props.element.flexBasis, onChange: this.changeElement})
               )
             ), 
             React.createElement("div", {className: "control select"}, 
               React.createElement("label", null, "align-self:", 
-                React.createElement("select", {"data-css": "alignSelf"}, 
+                React.createElement("select", {"data-prop": "alignSelf", defaultValue: this.props.element.alignSelf, onChange: this.changeElement}, 
                   React.createElement("option", {value: "auto"}, "auto"), 
                   React.createElement("option", {value: "flex-start"}, "flex-start"), 
                   React.createElement("option", {value: "flex-end"}, "flex-end"), 
@@ -217,7 +230,7 @@ var ElementControls = React.createClass({displayName: "ElementControls",
             React.createElement("div", null), 
             React.createElement("div", {className: "control text"}, 
               React.createElement("label", null, "content:", 
-                React.createElement("textarea", null)
+                React.createElement("textarea", {className: "content", "data-prop": "content", onChange: this.changeElement, defaultValue: this.props.element.content})
               )
             )
           )

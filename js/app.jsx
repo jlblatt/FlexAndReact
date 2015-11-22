@@ -56,11 +56,20 @@ var App = React.createClass({
     e.stopPropagation();
   }, //selectElement
 
+  updateElement: function(prop, val, which) {
+    var stateObj = { elements : [] };
+    stateObj.elements[which] = {};
+    stateObj.elements[which][prop] = { $set : val };
+
+    //var newState = React.addons.update(this.state, stateObj);
+    //this.setState(newState);
+  }, //updateElement
+
   render: function() {
     return(
       <div id="main">
         <div className="col sm">
-          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} element={this.state.elements[this.state.selected]} />
+          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} updateElement={this.updateElement} element={this.state.elements[this.state.selected]} />
         </div>
         <div className="col lg">
           <Container containerCSS={this.state.containerCSS} selectElement={this.selectElement} elements={this.state.elements} selected={this.state.selected} />
@@ -85,7 +94,7 @@ var Controls = React.createClass({
 
         <ContainerControls changeContainerCSS={this.props.changeContainerCSS} />
 
-        <ElementControls element={this.props.element} />
+        <ElementControls element={this.props.element} updateElement={this.props.updateElement} />
 
         <div className="add">
           <a title="Add Element" onClick={this.props.addElement}>+</a>
@@ -173,6 +182,10 @@ var ContainerControls = React.createClass({
 
 var ElementControls = React.createClass({
 
+  changeElement: function(e) {
+    this.props.updateElement(this.props.element.order, $(e.target).data('css'), $(e.target).val());
+  },
+
   render: function() {
     if(!this.props.element)
       return(
@@ -189,22 +202,22 @@ var ElementControls = React.createClass({
           <div className="control-set">
             <div className="control text">
               <label>flex-grow:
-                <input type="number" min="0" data-css="flexGrow" />
+                <input type="number" min="0" data-prop="flexGrow" defaultValue={this.props.element.flexGrow} onChange={this.changeElement} />
               </label>
             </div>
             <div className="control text">
               <label>flex-shrink:
-                <input type="number" min="0" data-css="flexShrink" />
+                <input type="number" min="0" data-prop="flexShrink" defaultValue={this.props.element.flexShrink} onChange={this.changeElement} />
               </label>
             </div>
             <div className="control text">
               <label>flex-basis:
-                <input type="text" data-css="flexBasis" />
+                <input type="text" data-prop="flexBasis" defaultValue={this.props.element.flexBasis} onChange={this.changeElement} />
               </label>
             </div>
             <div className="control select">
               <label>align-self:
-                <select data-css="alignSelf">
+                <select data-prop="alignSelf" defaultValue={this.props.element.alignSelf} onChange={this.changeElement}>
                   <option value="auto">auto</option>
                   <option value="flex-start">flex-start</option>
                   <option value="flex-end">flex-end</option>
@@ -217,7 +230,7 @@ var ElementControls = React.createClass({
             <div></div>
             <div className="control text">
               <label>content:
-                <textarea></textarea>
+                <textarea className="content" data-prop="content" onChange={this.changeElement} defaultValue={this.props.element.content}></textarea>
               </label>
             </div>
           </div>
