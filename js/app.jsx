@@ -17,7 +17,7 @@ var App = React.createClass({
       },
       elements: [],
       selected: null,
-      counter: 1,
+      counter: 0,
       lastElementProps: null
     };
   }, //initial state
@@ -53,13 +53,14 @@ var App = React.createClass({
 
   selectElement: function(which, e) {
     this.setState({selected: which});
+    e.stopPropagation();
   }, //selectElement
 
   render: function() {
     return(
       <div id="main">
         <div className="col sm">
-          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} selected={this.state.selected} />
+          <Controls changeContainerCSS={this.changeContainerCSS} addElement={this.addElement} element={this.state.elements[this.state.selected]} />
         </div>
         <div className="col lg">
           <Container containerCSS={this.state.containerCSS} selectElement={this.selectElement} elements={this.state.elements} selected={this.state.selected} />
@@ -81,14 +82,11 @@ var Controls = React.createClass({
           <h1 className="title">FlexAndReact</h1>
           <p className="byline">FlexBox Builder Using React.js [<a target="_blank" href="https://github.com/jlblatt/FlexAndReact">View On Github</a>]</p>
         </div>
-        <div className="panel container-settings">
-          <h4 className="title">Container Settings</h4>
-          <ContainerControls changeContainerCSS={this.props.changeContainerCSS} />
-        </div>
-        <div className="panel container-settings">
-          <h4 className="title">Box Settings</h4>
-          <ElementControls selected={this.props.selected}/>
-        </div>
+
+        <ContainerControls changeContainerCSS={this.props.changeContainerCSS} />
+
+        <ElementControls element={this.props.element} />
+
         <div className="add">
           <a title="Add Element" onClick={this.props.addElement}>+</a>
         </div>
@@ -108,59 +106,62 @@ var ContainerControls = React.createClass({
 
   render: function() {
     return(
-      <div className="control-set">
-        <div className="control select">
-          <label>flex-direction:
-            <select data-css="flexDirection" onChange={this.updateContainer}>
-              <option value="row">row</option>
-              <option value="row-reverse">row-reverse</option>
-              <option value="column">column</option>
-              <option value="column-reverse">column-reverse</option>
-            </select>
-          </label>
-        </div>
-        <div className="control select">
-          <label>flex-wrap:
-            <select data-css="flexWrap" onChange={this.updateContainer}>
-              <option value="nowrap">nowrap</option>
-              <option value="wrap">wrap</option>
-              <option value="wrap-reverse">wrap-reverse</option>
-            </select>
-          </label>
-        </div>
-        <div className="control select">
-          <label>justify-content:
-            <select data-css="justifyContent" onChange={this.updateContainer}>
-              <option value="flex-start">flex-start</option>
-              <option value="flex-end">flex-end</option>
-              <option value="center">center</option>
-              <option value="space-between">space-between</option>
-              <option value="space-around">space-around</option>
-            </select>
-          </label>
-        </div>
-        <div className="control select">
-          <label>align-items:
-            <select data-css="alignItems" onChange={this.updateContainer}>
-              <option value="flex-start">flex-start</option>
-              <option value="flex-end">flex-end</option>
-              <option value="center">center</option>
-              <option value="baseline">baseline</option>
-              <option value="stretch">stretch</option>
-            </select>
-          </label>
-        </div>
-        <div className="control select">
-          <label>align-content:
-            <select data-css="alignContent" onChange={this.updateContainer}>
-              <option value="flex-start">flex-start</option>
-              <option value="flex-end">flex-end</option>
-              <option value="center">center</option>
-              <option value="space-between">space-between</option>
-              <option value="space-around">space-around</option>
-              <option value="stretch">stretch</option>
-            </select>
-          </label>
+      <div className="panel container-settings">
+        <h4 className="title">Container Settings</h4>
+        <div className="control-set">
+          <div className="control select">
+            <label>flex-direction:
+              <select data-css="flexDirection" onChange={this.updateContainer}>
+                <option value="row">row</option>
+                <option value="row-reverse">row-reverse</option>
+                <option value="column">column</option>
+                <option value="column-reverse">column-reverse</option>
+              </select>
+            </label>
+          </div>
+          <div className="control select">
+            <label>flex-wrap:
+              <select data-css="flexWrap" onChange={this.updateContainer}>
+                <option value="nowrap">nowrap</option>
+                <option value="wrap">wrap</option>
+                <option value="wrap-reverse">wrap-reverse</option>
+              </select>
+            </label>
+          </div>
+          <div className="control select">
+            <label>justify-content:
+              <select data-css="justifyContent" onChange={this.updateContainer}>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="space-between">space-between</option>
+                <option value="space-around">space-around</option>
+              </select>
+            </label>
+          </div>
+          <div className="control select">
+            <label>align-items:
+              <select data-css="alignItems" onChange={this.updateContainer}>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="baseline">baseline</option>
+                <option value="stretch">stretch</option>
+              </select>
+            </label>
+          </div>
+          <div className="control select">
+            <label>align-content:
+              <select data-css="alignContent" onChange={this.updateContainer}>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="center">center</option>
+                <option value="space-between">space-between</option>
+                <option value="space-around">space-around</option>
+                <option value="stretch">stretch</option>
+              </select>
+            </label>
+          </div>
         </div>
       </div>
     )
@@ -173,41 +174,52 @@ var ContainerControls = React.createClass({
 var ElementControls = React.createClass({
 
   render: function() {
-    if(this.props.selected === null)
+    if(!this.props.element)
       return(
-        <div className="no-selection">No element selected!</div>
+        <div className="panel container-settings">
+          <h4 className="title">Element Settings</h4>
+          <div className="no-selection">No element selected!</div>
+        </div>
       )
 
     else
       return(
-        <div className="control-set">
-          <div className="control text">
-            <label>flex-grow:
-              <input type="number" min="0" data-css="flexGrow" />
-            </label>
-          </div>
-          <div className="control text">
-            <label>flex-shrink:
-              <input type="number" min="0" data-css="flexShrink" />
-            </label>
-          </div>
-          <div className="control text">
-            <label>flex-basis:
-              <input type="text" data-css="flexBasis" />
-            </label>
-          </div>
-          <div className="control select">
-            <label>align-self:
-              <select data-css="alignSelf">
-              align-self: auto | flex-start | flex-end | center | baseline | stretch
-                <option value="auto">auto</option>
-                <option value="flex-start">flex-start</option>
-                <option value="flex-end">flex-end</option>
-                <option value="center">center</option>
-                <option value="baseline">baseline</option>
-                <option value="stretch">stretch</option>
-              </select>
-            </label>
+        <div className="panel container-settings">
+          <h4 className="title">Element Settings <span>({this.props.element.order + 1})</span></h4>
+          <div className="control-set">
+            <div className="control text">
+              <label>flex-grow:
+                <input type="number" min="0" data-css="flexGrow" />
+              </label>
+            </div>
+            <div className="control text">
+              <label>flex-shrink:
+                <input type="number" min="0" data-css="flexShrink" />
+              </label>
+            </div>
+            <div className="control text">
+              <label>flex-basis:
+                <input type="text" data-css="flexBasis" />
+              </label>
+            </div>
+            <div className="control select">
+              <label>align-self:
+                <select data-css="alignSelf">
+                  <option value="auto">auto</option>
+                  <option value="flex-start">flex-start</option>
+                  <option value="flex-end">flex-end</option>
+                  <option value="center">center</option>
+                  <option value="baseline">baseline</option>
+                  <option value="stretch">stretch</option>
+                </select>
+              </label>
+            </div>
+            <div></div>
+            <div className="control text">
+              <label>content:
+                <textarea></textarea>
+              </label>
+            </div>
           </div>
         </div>
       )
@@ -234,7 +246,7 @@ var Container = React.createClass({
 
     return(
 
-      <div id="container" style={containerStyle}>
+      <div id="container" style={containerStyle} onClick={props.selectElement.bind(null, null)} >
 
         {this.props.elements.map(function(element, i){
 
@@ -252,7 +264,7 @@ var Container = React.createClass({
             <div className={className} style={elementStyle} key={i}>
               <div className="wrap" onClick={props.selectElement.bind(null, element.order)}>
                 <div className="props">
-                  <span className="order">{element.order}</span>
+                  <span className="order">#{element.order + 1}</span>
                   <span className="flex">{element.flexGrow} {element.flexShrink} {element.flexBasis} | {element.alignSelf}</span>
                 </div>
                 <div className="content">{element.content}</div>
