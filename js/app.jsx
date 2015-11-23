@@ -56,13 +56,13 @@ var App = React.createClass({
     e.stopPropagation();
   }, //selectElement
 
-  updateElement: function(prop, val, which) {
+	updateElement: function(which, prop, val) {
     var stateObj = { elements : [] };
     stateObj.elements[which] = {};
     stateObj.elements[which][prop] = { $set : val };
 
-    //var newState = React.addons.update(this.state, stateObj);
-    //this.setState(newState);
+    var newState = React.addons.update(this.state, stateObj);
+    this.setState(newState);
   }, //updateElement
 
   render: function() {
@@ -183,7 +183,7 @@ var ContainerControls = React.createClass({
 var ElementControls = React.createClass({
 
   changeElement: function(e) {
-    this.props.updateElement(this.props.element.order, $(e.target).data('css'), $(e.target).val());
+    this.props.updateElement(this.props.element.order, $(e.target).data('prop'), $(e.target).val());
   },
 
   render: function() {

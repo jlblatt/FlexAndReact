@@ -1,3 +1,7 @@
+"use strict";
+
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
 /**
  * ReactDOM v0.14.0
  *
@@ -10,33 +14,32 @@
  *
  */
 // Based off https://github.com/ForbesLindesay/umd/blob/master/template.js
-;(function(f) {
+;(function (f) {
   // CommonJS
-  if (typeof exports === "object" && typeof module !== "undefined") {
+  if ((typeof exports === "undefined" ? "undefined" : _typeof(exports)) === "object" && typeof module !== "undefined") {
     module.exports = f(require('react'));
 
-  // RequireJS
+    // RequireJS
   } else if (typeof define === "function" && define.amd) {
-    define(['react'], f);
+      define(['react'], f);
 
-  // <script>
-  } else {
-    var g
-    if (typeof window !== "undefined") {
-      g = window;
-    } else if (typeof global !== "undefined") {
-      g = global;
-    } else if (typeof self !== "undefined") {
-      g = self;
+      // <script>
     } else {
-      // works providing we're not in "use strict";
-      // needed for Java 8 Nashorn
-      // see https://github.com/facebook/react/issues/3037
-      g = this;
-    }
-    g.ReactDOM = f(g.React);
-  }
-
-})(function(React) {
+        var g;
+        if (typeof window !== "undefined") {
+          g = window;
+        } else if (typeof global !== "undefined") {
+          g = global;
+        } else if (typeof self !== "undefined") {
+          g = self;
+        } else {
+          // works providing we're not in "use strict";
+          // needed for Java 8 Nashorn
+          // see https://github.com/facebook/react/issues/3037
+          g = this;
+        }
+        g.ReactDOM = f(g.React);
+      }
+})(function (React) {
   return React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 });
