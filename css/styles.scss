@@ -56,7 +56,6 @@ textarea {
   display: block;
   position: relative;
   left: -.15em;
-  font-size: 1.25em;
 }
   input[type="text"] {
     width: 12em;
@@ -85,8 +84,8 @@ textarea {
 
 .col {
   @media (min-width: $medium) {
-    &.lg {flex: 0 0 65%;}
-    &.sm {flex: 0 0 35%;}
+    &.lg {flex: 0 0 65%; height: 100%;}
+    &.sm {flex: 0 0 35%; height: 100%;}
   }
 }
 
